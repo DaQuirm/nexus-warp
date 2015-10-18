@@ -2,7 +2,7 @@
   "name": "nexus-warp",
   "version": "0.0.1",
   "description": "A networking abstraction for nexus",
-  "main": "index.js",
+  "main": "./src/server/index.coffee",
   "scripts": {
     "test": "npm test"
   },
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DaQuirm/nexus-warp",
   "dependencies": {
-    "nexus-node": "^0.4.18"
+    "nexus-node": "^0.4.18",
+    "websocket": "^1.0.22"
   }
 }

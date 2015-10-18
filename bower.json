@@ -1,0 +1,21 @@
+{
+  "name": "nexus-warp",
+  "description": "A networking abstraction for nexus",
+  "main": "./src/client/index.coffee",
+  "authors": [
+    "DaQuirm <leo.daquirm@gmail.com>"
+  ],
+  "license": "LGPL-3.0",
+  "homepage": "https://github.com/DaQuirm/nexus-warp",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "nexus": "~0.4.18"
+  }
+}
