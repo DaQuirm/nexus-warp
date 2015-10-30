@@ -106,7 +106,7 @@ class Entity
 		if resource.transform.change? # nx.LiveTransform
 			live_cell = new nx.Cell
 
-			resource.transform.change['->'] live_cell, ({item, cell, value}) =>
+			resource.transform.change['->'] live_cell, ({item, cell, value}) ->
 				index = resource.items.indexOf item
 				json =
 					index: index
