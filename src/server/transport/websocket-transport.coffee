@@ -10,11 +10,11 @@ class WebSocketTransport extends EventEmitter
 		@server = new WebSocketServer
 			server: @options.http_server
 
-		@server.on 'connection', (connection) =>
-			session = @options.session_manager.create @
+		@server.on 'connection', (connection, request) =>
+			session = @options.session_manager.create @, request.cookies
 			@sessions.set connection, session
 			@connections.set session, connection
-			@options.session_manager.init session
+			do session.init
 
 		@server.on 'message', (data, connection) =>
 			message = JSON.parse data
@@ -22,7 +22,7 @@ class WebSocketTransport extends EventEmitter
 
 		@server.on 'close', (connection) =>
 			session = @sessions.get connection
-			@options.session_manager.destroy session
+			do session.destroy
 			@connections.delete session
 			@sessions.delete connection
 

@@ -14,7 +14,7 @@ class WebSocketServer extends EventEmitter
 
 		@websocket_server.on 'request', (request) =>
 			connection = request.accept '', request.origin
-			@emit 'connection', connection
+			@emit 'connection', connection, request
 
 			connection.on 'message', (message) =>
 				@emit 'message', message.utf8Data, connection
