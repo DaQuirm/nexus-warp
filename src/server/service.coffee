@@ -9,7 +9,9 @@ class Service
 
 		@broadcast = new nx.Cell
 			action: ({session, id, data}) =>
-				@transport.broadcast session, id, data
+				subscription = @subscriptions.get session
+				if id in subscription
+					@transport.broadcast session, id, data
 
 		send_everyone = ({id, data}) ->
 			session: null
@@ -28,7 +30,7 @@ class Service
 
 	subscribe: (session, ids) ->
 		@subscriptions.set session, ids
-		snapshot = @make_snapshot @entities, session.entities
+		snapshot = @make_snapshot @entities, session.entities, ids
 		@transport.sync_batch session, snapshot
 
 	sync: (session, entities) ->
@@ -40,13 +42,13 @@ class Service
 			else
 				session.sync id, data
 
-	make_snapshot: (entities, session_entities) ->
+	make_snapshot: (entities, session_entities, ids) ->
 		snapshot = {}
-		for id, entity of entities
+		for id, entity of entities when id in ids
 			snapshot[id] =
 				type: SyncType.LINK
 				value: do entity.to_json
-		for id, entity of session_entities
+		for id, entity of session_entities when id in ids
 			snapshot[id] =
 				type: SyncType.LINK
 				value: do entity.to_json
