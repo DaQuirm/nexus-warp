@@ -45,13 +45,17 @@ class Service
 	make_snapshot: (entities, session_entities, ids) ->
 		snapshot = {}
 		for id, entity of entities when id in ids
-			snapshot[id] =
-				type: SyncType.LINK
-				value: do entity.to_json
+			value = do entity.to_json
+			if value?
+				snapshot[id] =
+					type: SyncType.LINK
+					value: value
 		for id, entity of session_entities when id in ids
-			snapshot[id] =
-				type: SyncType.LINK
-				value: do entity.to_json
+			value = do entity.to_json
+			if value?
+				snapshot[id] =
+					type: SyncType.LINK
+					value: value
 		snapshot
 
 module.exports = Service
