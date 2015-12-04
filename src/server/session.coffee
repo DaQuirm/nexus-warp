@@ -5,6 +5,7 @@ Entity = require '../common/entity'
 class Session
 
 	constructor: ({facet, @transport}) ->
+		@session_facet = facet
 		@sync = new nx.Cell
 			action: ({id, data}) => @transport.sync @, id, data
 		if @is_plain_facet facet
@@ -41,9 +42,9 @@ class Session
 		@entities[id].sync value
 
 	init: ->
-		@facet.init @
+		@session_facet.init @
 
 	destroy: ->
-		@facet.destroy @
+		@session_facet.destroy @
 
 module.exports = Session
