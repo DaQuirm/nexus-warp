@@ -76,6 +76,10 @@ class Entity
 		else
 			@link.value
 
+	unlink: ->
+		do @binding.unbind
+		do @live_binding?.unbind
+
 	# Static methods
 
 	@get_link: (entity) -> entity.link or entity
