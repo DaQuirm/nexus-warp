@@ -38,7 +38,9 @@ class Session
 					for id, cell of new_entities
 						@send.value =
 						  id: id
-						  data: cell.value
+						  data:
+						  	value: cell.value
+						  	type: 'link'
 
 	sync: (id, value) ->
 		@entities[id].sync value
