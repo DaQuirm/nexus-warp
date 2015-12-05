@@ -5,7 +5,7 @@ Entity = require '../common/entity'
 class Session
 
 	constructor: ({facet, @transport}) ->
-		@broadcast = new nx.Cell
+		@send = new nx.Cell
 			action: ({id, data}) => @transport.sync @, id, data
 
 		@entities = {}
@@ -18,8 +18,8 @@ class Session
 	add_entities: (entities) ->
 		for id, data of entities
 			entity = new Entity id, data
-			entity.cell['->'] @broadcast
-			entity.live_cell?['->'] @broadcast
+			entity.cell['->'] @send
+			entity.live_cell?['->'] @send
 			@entities[id] = entity
 
 	remove_entities: (entities) ->
@@ -35,6 +35,10 @@ class Session
 					@remove_entities old_entities
 				if new_entities?
 					@add_entities new_entities
+					for id, cell of entities
+						@send.value =
+						  id: id
+						  data: cell.value
 
 	sync: (id, value) ->
 		@entities[id].sync value
