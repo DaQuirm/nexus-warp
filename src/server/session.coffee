@@ -7,12 +7,11 @@ class Session
 	constructor: ({facet, @transport}) ->
 		@sync = new nx.Cell
 			action: ({id, data}) => @transport.sync @, id, data
-		if @is_plain_facet facet
 			@session_facet = facet
 			@add_entities facet.entities
-		else
-			@session_facet = facet.facet
-			@process_facet facet
+
+			if facet.dynamic_entities?
+				process_dynamic_entities facet.dynamic_entities
 
 	add_entities: (entities) ->
 		for id, data of entities
@@ -26,18 +25,14 @@ class Session
 			do entity.unlink
 			delete @entities[name]
 
-	is_plain_facet: ({morph, capture}) ->
-		not morph? and not capture?
-
-	process_facet: ({facet, capture, morph}) ->
-		cells = capture.map (cell_name) -> facet[cell_name]
+	process_dynamic_entities: (entities) ->
 		cell = new nx.Cell
-			'<-': [cells, morph]
-			action: (new_facet, old_facet) =>
-				if old_facet?
-					@remove_entities old_facet.entities
-				if new_facet?
-					@add_entities new_facet.entities
+			'<-': [entities]
+			action: (new_entities, old_entities) =>
+				if old_entities?
+					@remove_entities old_entities
+				if new_entities?
+					@add_entities new_entities
 
 	sync: (id, value) ->
 		@entities[id].sync value
