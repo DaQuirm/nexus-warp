@@ -7,11 +7,13 @@ class Session
 	constructor: ({facet, @transport}) ->
 		@sync = new nx.Cell
 			action: ({id, data}) => @transport.sync @, id, data
-			@session_facet = facet
-			@add_entities facet.entities
 
-			if facet.dynamic_entities?
-				process_dynamic_entities facet.dynamic_entities
+		@entities = {}
+		@session_facet = facet
+		@add_entities facet.entities
+
+		if facet.dynamic_entities?
+			process_dynamic_entities facet.dynamic_entities
 
 	add_entities: (entities) ->
 		for id, data of entities
