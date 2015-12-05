@@ -35,7 +35,7 @@ class Session
 					@remove_entities old_entities
 				if new_entities?
 					@add_entities new_entities
-					for id, cell of entities
+					for id, cell of new_entities
 						@send.value =
 						  id: id
 						  data: cell.value
