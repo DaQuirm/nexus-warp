@@ -13,7 +13,7 @@ class Session
 		@add_entities facet.entities
 
 		if facet.dynamic_entities?
-			process_dynamic_entities facet.dynamic_entities
+			@process_dynamic_entities facet.dynamic_entities
 
 	add_entities: (entities) ->
 		for id, data of entities
