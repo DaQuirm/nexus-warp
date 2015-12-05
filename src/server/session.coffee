@@ -5,12 +5,13 @@ Entity = require '../common/entity'
 class Session
 
 	constructor: ({facet, @transport}) ->
-		@session_facet = facet
 		@sync = new nx.Cell
 			action: ({id, data}) => @transport.sync @, id, data
 		if @is_plain_facet facet
+			@session_facet = facet
 			@add_entities facet.entities
 		else
+			@session_facet = facet.facet
 			@process_facet facet
 
 	add_entities: (entities) ->
