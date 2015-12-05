@@ -11,10 +11,10 @@ class WebSocketTransport extends EventEmitter
 			server: @options.http_server
 
 		@server.on 'connection', (connection, request) =>
-			session = @options.session_manager.create @, request.cookies
-			@sessions.set connection, session
-			@connections.set session, connection
-			do session.init
+			@options.session_manager.create @, request.cookies, (session) =>
+				@sessions.set connection, session
+				@connections.set session, connection
+				do session.init
 
 		@server.on 'message', (data, connection) =>
 			message = JSON.parse data
