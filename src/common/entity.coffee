@@ -122,4 +122,14 @@ class Entity
 					value: json
 					type:  SyncType.LIVE
 
+	@make_snapshot: (entities, ids) ->
+		snapshot = {}
+		for id in ids when entities[id]?
+			value = do entities[id].to_json
+			if value?
+				snapshot[id] =
+					type: SyncType.LINK
+					value: value
+		snapshot
+
 module.exports = Entity

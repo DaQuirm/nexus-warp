@@ -30,8 +30,10 @@ class Service
 
 	subscribe: (session, ids) ->
 		@subscriptions.set session, ids
-		snapshot = @make_snapshot @entities, session.entities, ids
+		snapshot = Entity.make_snapshot @entities, ids
+		session_snapshot = Entity.make_snapshot session.entities, ids
 		@transport.sync_batch session, snapshot
+		@transport.sync_batch session, session_snapshot
 
 	sync: (session, entities) ->
 		for id, data of entities
@@ -41,21 +43,5 @@ class Service
 				@transport.broadcast session, id, data
 			else
 				session.sync id, data
-
-	make_snapshot: (entities, session_entities, ids) ->
-		snapshot = {}
-		for id, entity of entities when id in ids
-			value = do entity.to_json
-			if value?
-				snapshot[id] =
-					type: SyncType.LINK
-					value: value
-		for id, entity of session_entities when id in ids
-			value = do entity.to_json
-			if value?
-				snapshot[id] =
-					type: SyncType.LINK
-					value: value
-		snapshot
 
 module.exports = Service

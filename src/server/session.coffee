@@ -35,12 +35,9 @@ class Session
 					@remove_entities old_entities
 				if new_entities?
 					@add_entities new_entities
-					for id, cell of new_entities
-						@send.value =
-						  id: id
-						  data:
-						  	value: cell.value
-						  	type: 'link'
+					ids = Object.keys new_entities
+					snapshot = Entity.make_snapshot @entities, ids
+					@transport.sync_batch @, snapshot
 
 	sync: (id, value) ->
 		@entities[id].sync value
