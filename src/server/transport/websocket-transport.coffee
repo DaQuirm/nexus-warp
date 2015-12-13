@@ -6,19 +6,29 @@ class WebSocketTransport extends EventEmitter
 	constructor: (@options) ->
 		@sessions = new Map
 		@connections = new Map
+		@message_queues = new Map
 
 		@server = new WebSocketServer
 			server: @options.http_server
 
 		@server.on 'connection', (connection, request) =>
+			@message_queues.set connection, []
 			@options.session_manager.create @, request.cookies, (session) =>
 				@sessions.set connection, session
 				@connections.set session, connection
-				do session.init
+				message_queue = message_queues.get connection
+				message_queue.forEach (message) =>
+					@["on#{message.msg}"] session, message
+				message_queues.delete connection
 
 		@server.on 'message', (data, connection) =>
 			message = JSON.parse data
-			@["on#{message.msg}"] @sessions.get(connection), message
+			session = @sessions.get connection
+			if not session?
+				message_queue = message_queues.get connection
+				message_queue.push message
+			else
+				@["on#{message.msg}"] @sessions.get(connection), message
 
 		@server.on 'close', (connection) =>
 			session = @sessions.get connection
