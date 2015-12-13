@@ -16,16 +16,16 @@ class WebSocketTransport extends EventEmitter
 			@options.session_manager.create @, request.cookies, (session) =>
 				@sessions.set connection, session
 				@connections.set session, connection
-				message_queue = message_queues.get connection
+				message_queue = @message_queues.get connection
 				message_queue.forEach (message) =>
 					@["on#{message.msg}"] session, message
-				message_queues.delete connection
+				@message_queues.delete connection
 
 		@server.on 'message', (data, connection) =>
 			message = JSON.parse data
 			session = @sessions.get connection
 			if not session?
-				message_queue = message_queues.get connection
+				message_queue = @message_queues.get connection
 				message_queue.push message
 			else
 				@["on#{message.msg}"] @sessions.get(connection), message
