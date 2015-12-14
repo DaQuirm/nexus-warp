@@ -26,7 +26,8 @@ class Entity
 				type:  SyncType.LINK
 
 		if @type is EntityType.COLLECTION
-			@live_binding = Entity.create_live_binding data
+			@live_binding = Entity.create_live_binding @id, data
+			@live_cell = @live_binding?.target
 
 	sync: ({value, type}) ->
 		switch type
@@ -105,7 +106,7 @@ class Entity
 			when EntityType.CELL then	link
 			when EntityType.COLLECTION then link.command
 
-	@create_live_binding: (entity) ->
+	@create_live_binding: (id, entity) ->
 		resource = Entity.get_link entity
 		if resource.transform.change? # nx.LiveTransform
 			live_cell = new nx.Cell
@@ -117,7 +118,7 @@ class Entity
 					cell: cell
 					value: value
 
-				id: entity.id
+				id: id
 				data:
 					value: json
 					type:  SyncType.LIVE
