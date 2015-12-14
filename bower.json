@@ -17,6 +17,6 @@
     "tests"
   ],
   "dependencies": {
-    "nexus": "~0.4.18"
+    "nexus": "git://github.com/DaQuirm/nexus#master"
   }
 }
