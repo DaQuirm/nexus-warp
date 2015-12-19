@@ -9,7 +9,7 @@ class Session
 			action: ({id, data}) => @transport.sync @, id, data
 
 		@entities = {}
-		@session_facet = facet
+		@facet = facet
 		@add_entities facet.entities
 
 		if facet.dynamic_entities?
@@ -23,13 +23,12 @@ class Session
 			@entities[id] = entity
 
 	remove_entities: (entities) ->
-		for name, entity of entities
-			do entity.unlink
+		for name, _ of entities when @entities[name]
+			do @entities[name].unlink
 			delete @entities[name]
 
 	process_dynamic_entities: (entities) ->
 		cell = new nx.Cell
-			'<-': [entities]
 			action: (new_entities, old_entities) =>
 				if old_entities?
 					@remove_entities old_entities
@@ -38,15 +37,17 @@ class Session
 					ids = Object.keys new_entities
 					snapshot = Entity.make_snapshot @entities, ids
 					@transport.sync_batch @, snapshot
+		@dynamic_entities_binding = cell['<-'] entities
 
 	sync: (id, value) ->
 		@entities[id].sync value
 
 	init: ->
-		@session_facet.init @
+		@facet.init @
 
 	destroy: ->
+		@facet.destroy @
 		@remove_entities @entities
-		@session_facet.destroy @
+		do @dynamic_entities_binding.unbind
 
 module.exports = Session
