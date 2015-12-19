@@ -46,6 +46,7 @@ class Session
 		@session_facet.init @
 
 	destroy: ->
+		@remove_entities @entities
 		@session_facet.destroy @
 
 module.exports = Session
