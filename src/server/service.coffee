@@ -32,8 +32,8 @@ class Service
 		@subscriptions.set session, ids
 		snapshot = Entity.make_snapshot @entities, ids
 		session_snapshot = Entity.make_snapshot session.entities, ids
-		@transport.sync_batch session, snapshot
-		@transport.sync_batch session, session_snapshot
+		@transport.sync_batch session.id, snapshot
+		@transport.sync_batch session.id, session_snapshot
 
 	sync: (session, entities) ->
 		for id, data of entities
