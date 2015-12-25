@@ -1,5 +1,6 @@
 {EventEmitter}  = require 'events'
 WebSocketServer = require './websocket-server'
+uuid            = require 'node-uuid'
 
 class WebSocketTransport extends EventEmitter
 
@@ -13,9 +14,10 @@ class WebSocketTransport extends EventEmitter
 
 		@server.on 'connection', (connection, request) =>
 			@message_queues.set connection, []
-			@options.session_manager.create @, request.cookies, (session) =>
+			session_id = do uuid.v1
+			@connections.set session_id, connection
+			@options.session_manager.create @, session_id, request.cookies, (session) =>
 				@sessions.set connection, session
-				@connections.set session, connection
 				message_queue = @message_queues.get connection
 				message_queue.forEach (message) =>
 					@["on#{message.msg}"] session, message
@@ -33,7 +35,7 @@ class WebSocketTransport extends EventEmitter
 		@server.on 'close', (connection) =>
 			session = @sessions.get connection
 			do session.destroy
-			@connections.delete session
+			@connections.delete session.id
 			@sessions.delete connection
 
 		do @server.start
@@ -46,8 +48,8 @@ class WebSocketTransport extends EventEmitter
 		@emit 'sync', session, entities
 
 	# Senders
-	send: (session, message) ->
-		connection = @connections.get session
+	send: (session_id, message) =>
+		connection = @connections.get session_id
 		connection.sendUTF JSON.stringify(message)
 
 	broadcast: (sender_session, id, value) ->
@@ -55,14 +57,14 @@ class WebSocketTransport extends EventEmitter
 			if session isnt sender_session
 				@sync session, id, value
 
-	sync: (session, id, value) ->
-		@send session,
+	sync: (session_id, id, value) ->
+		@send session_id,
 			msg: 'sync'
 			entities:
 				"#{id}": value
 
-	sync_batch: (session, entities) ->
-		@send session,
+	sync_batch: (session_id, entities) ->
+		@send session_id,
 			msg: 'sync'
 			entities: entities
 

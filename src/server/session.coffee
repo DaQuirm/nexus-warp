@@ -4,12 +4,12 @@ Entity = require '../common/entity'
 
 class Session
 
-	constructor: ({facet, @transport}) ->
+	constructor: ({facet, @transport, @id}) ->
 		@send = new nx.Cell
-			action: ({id, data}) => @transport.sync @, id, data
+			action: ({id, data}) => @transport.sync @id, id, data
 
 		@entities = {}
-		@facet = facet
+		@session_facet = facet
 		@add_entities facet.entities
 
 		if facet.dynamic_entities?
@@ -36,17 +36,17 @@ class Session
 					@add_entities new_entities
 					ids = Object.keys new_entities
 					snapshot = Entity.make_snapshot @entities, ids
-					@transport.sync_batch @, snapshot
+					@transport.sync_batch @id, snapshot
 		@dynamic_entities_binding = cell['<-'] entities
 
 	sync: (id, value) ->
 		@entities[id].sync value
 
 	init: ->
-		@facet.init @
+		@session_facet.init @
 
 	destroy: ->
-		@facet.destroy @
+		@session_facet.destroy @
 		@remove_entities @entities
 		do @dynamic_entities_binding.unbind
 
