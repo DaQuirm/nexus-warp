@@ -9,7 +9,7 @@ class Session
 			action: ({id, data}) => @transport.sync @id, id, data
 
 		@entities = {}
-		@session_facet = facet
+		@facet = facet
 		@add_entities facet.entities
 
 		if facet.dynamic_entities?
@@ -43,10 +43,10 @@ class Session
 		@entities[id].sync value
 
 	init: ->
-		@session_facet.init @
+		@facet.init @
 
 	destroy: ->
-		@session_facet.destroy @
+		@facet.destroy @
 		@remove_entities @entities
 		do @dynamic_entities_binding.unbind
 
