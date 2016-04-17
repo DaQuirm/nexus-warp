@@ -48,6 +48,6 @@ class Session
 	destroy: ->
 		@facet.destroy @
 		@remove_entities @entities
-		do @dynamic_entities_binding.unbind
+		do @dynamic_entities_binding?.unbind
 
 module.exports = Session
