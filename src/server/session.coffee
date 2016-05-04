@@ -7,10 +7,11 @@ class Session
 	constructor: ({facet, @transport, @log, @id}) ->
 		@send = new nx.Cell
 			action: ({id, data}) =>
-				@log
-					type: 'session-sync'
-					session: @
-					data: data
+				if @log?
+					@log
+						type: 'session-sync'
+						session: @
+						data: data
 				@transport.sync @id, id, data
 
 		@entities = {}

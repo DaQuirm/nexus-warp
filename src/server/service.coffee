@@ -14,10 +14,11 @@ class Service
 					@transport.broadcast session, id, data
 
 		send_everyone = ({id, data}) ->
-			@log
-				type: 'broadcast'
-				session: session
-				data: data
+			if @log?
+				@log
+					type: 'broadcast'
+					session: session
+					data: data
 
 			session: null
 			id:      id
@@ -37,18 +38,20 @@ class Service
 		@subscriptions.set session, ids
 		snapshot = Entity.make_snapshot @entities, ids
 		session_snapshot = Entity.make_snapshot session.entities, ids
-		@log
-			type: 'batch'
-			session: session
-			data: { snapshot, session_snapshot }
+		if @log?
+			@log
+				type: 'batch'
+				session: session
+				data: { snapshot, session_snapshot }
 		@transport.sync_batch session.id, snapshot
 		@transport.sync_batch session.id, session_snapshot
 
 	sync: (session, entities) ->
-		@log
-			type: 'sync'
-			session: session
-			data: entities
+		if @log?
+			@log
+				type: 'sync'
+				session: session
+				data: entities
 		for id, data of entities
 			entity = @entities[id]
 			if entity?
