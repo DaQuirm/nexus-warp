@@ -4,7 +4,7 @@ SyncType = require '../common/sync-type'
 
 class Service
 
-	constructor: ({@transport, entities}) ->
+	constructor: ({@transport, @log, entities}) ->
 		@subscriptions = new Map
 
 		@broadcast = new nx.Cell
@@ -14,6 +14,11 @@ class Service
 					@transport.broadcast session, id, data
 
 		send_everyone = ({id, data}) ->
+			@log
+				type: 'broadcast'
+				session: session
+				data: data
+
 			session: null
 			id:      id
 			data:   data
@@ -32,10 +37,18 @@ class Service
 		@subscriptions.set session, ids
 		snapshot = Entity.make_snapshot @entities, ids
 		session_snapshot = Entity.make_snapshot session.entities, ids
+		@log
+			type: 'batch'
+			session: session
+			data: { snapshot, session_snapshot }
 		@transport.sync_batch session.id, snapshot
 		@transport.sync_batch session.id, session_snapshot
 
 	sync: (session, entities) ->
+		@log
+			type: 'sync'
+			session: session
+			data: entities
 		for id, data of entities
 			entity = @entities[id]
 			if entity?

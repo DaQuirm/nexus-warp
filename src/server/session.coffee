@@ -4,9 +4,14 @@ Entity = require '../common/entity'
 
 class Session
 
-	constructor: ({facet, @transport, @id}) ->
+	constructor: ({facet, @transport, @log, @id}) ->
 		@send = new nx.Cell
-			action: ({id, data}) => @transport.sync @id, id, data
+			action: ({id, data}) =>
+				@log
+					type: 'session-sync'
+					session: @
+					data: data
+				@transport.sync @id, id, data
 
 		@entities = {}
 		@facet = facet
