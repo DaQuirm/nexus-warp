@@ -19,6 +19,10 @@ class WebSocketServer extends EventEmitter
 			connection.on 'message', (message) =>
 				@emit 'message', message.utf8Data, connection
 
+			connection.on 'error', (error) =>
+				if error.code is not 'EPIPE'
+					throw error
+
 			connection.on 'close', => @emit 'close', connection
 
 module.exports = WebSocketServer
