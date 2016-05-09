@@ -49,8 +49,9 @@ class WebSocketTransport extends EventEmitter
 
 	# Senders
 	send: (session_id, message) =>
-		connection = @connections.get session_id
-		connection.sendUTF JSON.stringify(message)
+		if @connections.has session_id
+			connection = @connections.get session_id
+			connection.sendUTF JSON.stringify(message)
 
 	broadcast: (sender_session, id, value) ->
 		@sessions.forEach (session) =>
