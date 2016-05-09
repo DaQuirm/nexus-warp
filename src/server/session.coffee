@@ -11,7 +11,8 @@ class Session
 					@log
 						type: 'session-sync'
 						session: @
-						data: data
+						data:
+							"#{id}": data
 				@transport.sync @id, id, data
 
 		@entities = {}
