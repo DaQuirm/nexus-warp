@@ -20,9 +20,7 @@ class WebSocketServer extends EventEmitter
 				@emit 'message', message.utf8Data, connection
 
 			connection.on 'error', (error) =>
-				if error.code is 'EPIPE'
-					@emit 'close', connection
-				else
+				if error.code is not 'EPIPE'
 					throw error
 
 			connection.on 'close', => @emit 'close', connection
