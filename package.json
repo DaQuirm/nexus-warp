@@ -4,7 +4,7 @@
   "description": "A networking abstraction for nexus",
   "main": "./src/server/index.coffee",
   "scripts": {
-    "test": "npm test"
+    "test": ""
   },
   "repository": {
     "type": "git",
