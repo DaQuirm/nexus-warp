@@ -47,7 +47,7 @@ class Session
 		@dynamic_entities_binding = cell['<-'] entities
 
 	sync: (id, value) ->
-		@entities[id].sync value
+		@entities[id]?.sync value
 
 	init: ->
 		@facet.init @
