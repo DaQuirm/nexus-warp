@@ -47,7 +47,13 @@ class Session
 		@dynamic_entities_binding = cell['<-'] entities
 
 	sync: (id, value) ->
-		@entities[id]?.sync value
+		entity = @entities[id]
+		if entity?
+			entity.sync value
+		else
+			@log
+				type: 'EPIC sync FAIL'
+				data: @entities
 
 	init: ->
 		@facet.init @
