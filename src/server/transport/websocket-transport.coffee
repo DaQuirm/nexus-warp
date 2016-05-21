@@ -16,12 +16,17 @@ class WebSocketTransport extends EventEmitter
 			@message_queues.set connection, []
 			session_id = do uuid.v1
 			@connections.set session_id, connection
-			@options.session_manager.create @, session_id, request.cookies, (session) =>
-				@sessions.set connection, session
-				message_queue = @message_queues.get connection
-				message_queue.forEach (message) =>
-					@["on#{message.msg}"] session, message
-				@message_queues.delete connection
+			@options.session_manager.create @, session_id, request.cookies, (err, session) =>
+				unless err
+					@sessions.set connection, session
+					message_queue = @message_queues.get connection
+					message_queue.forEach (message) =>
+						@["on#{message.msg}"] session, message
+					@message_queues.delete connection
+				else
+					@message_queues.delete connection
+					@connections.delete session_id
+					connection.close connection.CLOSE_REASON_NORMAL, err.message
 
 		@server.on 'message', (data, connection) =>
 			message = JSON.parse data
@@ -34,9 +39,10 @@ class WebSocketTransport extends EventEmitter
 
 		@server.on 'close', (connection) =>
 			session = @sessions.get connection
-			do session.destroy
-			@connections.delete session.id
-			@sessions.delete connection
+			if session
+				do session.destroy
+				@connections.delete session.id
+				@sessions.delete connection
 
 		do @server.start
 
