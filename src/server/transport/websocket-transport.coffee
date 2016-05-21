@@ -38,8 +38,8 @@ class WebSocketTransport extends EventEmitter
 				@["on#{message.msg}"] @sessions.get(connection), message
 
 		@server.on 'close', (connection) =>
-			session = @sessions.get connection
 			if @sessions.has connection
+				session = @sessions.get connection
 				do session.destroy
 				@connections.delete session.id
 				@sessions.delete connection
