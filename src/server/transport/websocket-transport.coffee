@@ -17,7 +17,7 @@ class WebSocketTransport extends EventEmitter
 			session_id = do uuid.v1
 			@connections.set session_id, connection
 			@options.session_manager.create @, session_id, request.cookies, (err, session) =>
-				unless err
+				unless err?
 					@sessions.set connection, session
 					message_queue = @message_queues.get connection
 					message_queue.forEach (message) =>
@@ -39,7 +39,7 @@ class WebSocketTransport extends EventEmitter
 
 		@server.on 'close', (connection) =>
 			session = @sessions.get connection
-			if session
+			if @sessions.has connection
 				do session.destroy
 				@connections.delete session.id
 				@sessions.delete connection
