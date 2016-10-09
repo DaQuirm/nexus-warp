@@ -19,6 +19,6 @@
   "dependencies": {
     "nexus-node": "git+https://github.com/DaQuirm/nexus.git",
     "node-uuid": "^1.4.7",
-    "websocket": "^1.0.22"
+    "uws": "^0.10.5"
   }
 }

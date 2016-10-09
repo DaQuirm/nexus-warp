@@ -1,6 +1,6 @@
 http            = require 'http'
 {EventEmitter}  = require 'events'
-Server          = require('websocket').server
+Server          = require('uws').Server
 
 class WebSocketServer extends EventEmitter
 
